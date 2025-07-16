@@ -10,7 +10,6 @@ protected:
     float width, length;
     Colour fill;
     Stroke stroke;
-
 public:
     Rectangle();
     ~Rectangle();
