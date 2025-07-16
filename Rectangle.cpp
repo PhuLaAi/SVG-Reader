@@ -1,6 +1,5 @@
 #include "Libs.h"
 
-// Constructor/destructor
 Rectangle::Rectangle() : x(0), y(0), width(0), length(0), fill(), stroke() {}
 Rectangle::~Rectangle() {}
 
