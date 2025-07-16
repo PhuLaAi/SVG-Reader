@@ -10,7 +10,7 @@ using namespace Gdiplus;
 using namespace rapidxml;
 
 class Line {
-private:
+protected:
     Point2D start;
     Point2D end;
     Stroke stroke;
