@@ -5,7 +5,7 @@
 #include "Point2D.h"
 #include "Colour.h"
 #include "rapidxml.hpp"
-#include <vector>
+
 using namespace rapidxml;
 using namespace Gdiplus;
 
