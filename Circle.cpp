@@ -155,10 +155,10 @@ void drawCircle(Graphics* graphics, vector<Circle>& circles) {
         Colour colour = c.getColour();
 
         SolidBrush brush(Color(
-            BYTE(colour.o * 255),  // Alpha
-            BYTE(colour.r * 255),  // Red
-            BYTE(colour.g * 255),  // Green
-            BYTE(colour.b * 255)   // Blue
+            BYTE(colour.o * 255),  
+            BYTE(colour.r * 255), 
+            BYTE(colour.g * 255),  
+            BYTE(colour.b * 255)   
         ));
 
         float x = c.getCenter().getX() - c.getRX();
@@ -173,10 +173,10 @@ void drawCircle(Graphics* graphics, vector<Circle>& circles) {
 
         if (strokeWidth > 0) {
             Pen pen(Color(
-                BYTE(stroke.o * 255),  // Alpha
-                BYTE(stroke.r * 255),  // Red
-                BYTE(stroke.g * 255),  // Green
-                BYTE(stroke.b * 255)   // Blue
+                BYTE(stroke.o * 255),  
+                BYTE(stroke.r * 255),  
+                BYTE(stroke.g * 255),  
+                BYTE(stroke.b * 255)   
             ), strokeWidth);
             graphics->DrawEllipse(&pen, x, y, w, h);
         }
