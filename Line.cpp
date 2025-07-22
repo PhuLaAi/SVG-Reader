@@ -1,54 +1,120 @@
 #include "Line.h"
-#include <string>
-#include <sstream>
 
-// Constructor / Destructor
-Line::Line() {}
-Line::~Line() {}
-
-// Convert hex color string (e.g. "#ff0000") to Colour
-Colour parseColour(const string& hex) {
-    if (hex.empty() || hex[0] != '#') return Colour(0, 0, 0, 1);
-
-    unsigned int r, g, b;
-    std::stringstream ss;
-    ss << std::hex << hex.substr(1);
-    unsigned int colorInt;
-    ss >> colorInt;
-
-    r = (colorInt >> 16) & 0xFF;
-    g = (colorInt >> 8) & 0xFF;
-    b = colorInt & 0xFF;
-
-    return Colour(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+Line::Line() {
+	start.setX(0);
+	start.setY(0);
+	end.setX(0);
+	end.setY(0);
+}
+Line::~Line() {
 }
 
-// Parse from <line> node
-void Line::parse(xml_node<>* node) {
-    if (!node) return;
-
-    float x1 = node->first_attribute("x1") ? std::stof(node->first_attribute("x1")->value()) : 0.0f;
-    float y1 = node->first_attribute("y1") ? std::stof(node->first_attribute("y1")->value()) : 0.0f;
-    float x2 = node->first_attribute("x2") ? std::stof(node->first_attribute("x2")->value()) : 0.0f;
-    float y2 = node->first_attribute("y2") ? std::stof(node->first_attribute("y2")->value()) : 0.0f;
-
-    start.setX(x1); start.setY(y1);
-    end.setX(x2); end.setY(y2);
-
-    // Stroke color
-    string strokeColor = node->first_attribute("stroke") ? node->first_attribute("stroke")->value() : "#000000";
-    stroke.setStrokeColour(parseColour(strokeColor));
-
-    // Stroke width
-    float width = node->first_attribute("stroke-width") ? std::stof(node->first_attribute("stroke-width")->value()) : 1.0f;
-    stroke.setStrokeWidth(width);
+Point2D Line::getStart() {
+	start.getX();
+	start.getY();
+	return start;
+}
+Point2D Line::getEnd() {
+	end.getX();
+	end.getY();
+	return end;
+}
+float Line::getStrokeWidth() {
+	return stroke.getStrokeWidth();
+}
+Colour Line::getStrokeColour() {
+	return stroke.getStrokeColour();
 }
 
-// Draw with GDI+
-void Line::draw(Graphics& graphics) {
-    Colour c = stroke.getStrokeColour();
-    Gdiplus::Color penColor(static_cast<BYTE>(c.o * 255), static_cast<BYTE>(c.r * 255), static_cast<BYTE>(c.g * 255), static_cast<BYTE>(c.b * 255));
-    Pen pen(penColor, stroke.getStrokeWidth());
+void Line::setStart(Point2D a) {
+	start = a;
+}
+void Line::setEnd(Point2D b) {
+	end = b;
+}
+void Line::setStrokeWidth(float w) {
+	stroke.setStrokeWidth(w);
+}
+void Line::setStrokeColour(Colour StkColour) {
+	stroke.setStrokeColour(StkColour);
+}
 
-    graphics.DrawLine(&pen, start.getX(), start.getY(), end.getX(), end.getY());
+vector<Line> parseLine(const string& filename) {
+    vector<Line> lines;
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Unable to open file\n";
+        return lines;
+    }
+
+    string xmlContent((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+    vector<char> buffer(xmlContent.begin(), xmlContent.end());
+    buffer.push_back('\0');
+
+    xml_document<> doc;
+    doc.parse<0>(&buffer[0]);
+
+    xml_node<>* svg = doc.first_node("svg");
+    if (!svg) {
+        cerr << "Unable to find <svg> node\n";
+        return lines;
+    }
+
+    for (xml_node<>* node = svg->first_node("line"); node; node = node->next_sibling("line")) {
+        Line l;
+        float strokeOpacity = 1.0f;
+
+        Point2D start, end;
+        if (auto x1 = node->first_attribute("x1")) start.setX(stof(x1->value()));
+        if (auto y1 = node->first_attribute("y1")) start.setY(stof(y1->value()));
+        if (auto x2 = node->first_attribute("x2")) end.setX(stof(x2->value()));
+        if (auto y2 = node->first_attribute("y2")) end.setY(stof(y2->value()));
+        l.setStart(start);
+        l.setEnd(end);
+
+        if (xml_attribute<>* strokeWidthAttr = node->first_attribute("stroke-width")) {
+            l.setStrokeWidth(stof(strokeWidthAttr->value()));
+        }
+
+        if (xml_attribute<>* strokeOp = node->first_attribute("stroke-opacity")) {
+            strokeOpacity = stof(strokeOp->value());
+        }
+
+        if (xml_attribute<>* strokeAttr = node->first_attribute("stroke")) {
+            string strokeColor = strokeAttr->value();
+            if (strokeColor.substr(0, 4) == "rgb(") {
+                string inner = strokeColor.substr(4, strokeColor.size() - 5);
+                replace(inner.begin(), inner.end(), ',', ' ');
+                istringstream iss(inner);
+                int r, g, b;
+                iss >> r >> g >> b;
+                l.setStrokeColour(Colour(r / 255.0f, g / 255.0f, b / 255.0f, strokeOpacity));
+            }
+        }
+
+        lines.push_back(l);
+    }
+
+    return lines;
+}
+void drawLine(Graphics* graphics, vector<Line>& line) {
+    for (Line& l : line) {
+        Colour stroke = l.getStrokeColour();
+        float strokeWidth = l.getStrokeWidth();
+
+        Pen pen(Color(
+            BYTE(stroke.o * 255),
+            BYTE(stroke.r * 255),
+            BYTE(stroke.g * 255),
+            BYTE(stroke.b * 255)
+        ), strokeWidth);
+
+        float x1 = l.getStart().getX();
+        float y1 = l.getStart().getY();
+        float x2 = l.getEnd().getX();
+        float y2 = l.getEnd().getY();
+
+        graphics->DrawLine(&pen, x1, y1, x2, y2);
+    }
 }
