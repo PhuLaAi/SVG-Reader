@@ -1,5 +1,5 @@
-﻿#ifndef TEXT_H
-#define TEXT_H
+#ifndef Text_H
+#define Text_H
 
 #include "stdafx.h"
 #include "Point2D.h"
@@ -11,45 +11,47 @@ using namespace Gdiplus;
 
 class Text {
 protected:
-	Point2D textPos;
 	float fontSize, dx, dy;
-	string content;
-	string fontFamily;
-	string textAnchor;
-	string fontStyle;
+	Point2D textPos;
+	string content, fontFamily, textAnchor, fontStyle;
 	Colour fill;
 	Stroke stroke;
-
 public:
 	Text();
 	~Text();
 
-	Point2D getTextPos();
-	float getFontSize();
-	float getDx();
-	float getDy();
-	string getContent();
-	string getFontFamily();
-	string getTextAnchor();
-	string getFontStyle();
-	Colour getFillColour();
-	float getStrokeWidth();
-	Colour getStrokeColour();
+	Point2D getTextPos() const;
+	float getDx() const;
+	float getDy() const;
+	float getFontSize() const;
+	string getFontFamily() const;
+	string getFontStyle() const;
+	string getTextAnchor() const;
+	string getContent() const;
+	Colour getColour() const;
+	float getStrokeWidth() const;
+	Colour getStrokeColour() const;
 
+	// Setters
 	void setTextPos(float x, float y);
+	void setDx(float dx);
+	void setDy(float dy);
 	void setFontSize(float size);
-	void setDx(float val);
-	void setDy(float val);
-	void setContent(const string& str);
-	void setFontFamily(const string& family);
-	void setTextAnchor(const string& anchor);
-	void setFontStyle(const string& style);
-	void setFillColour(Colour colour);
-	void setStrokeWidth(float width);
-	void setStrokeColour(Colour colour);
-};
+	void setFontFamily(string family);
+	void setFontStyle(string style);
+	void setTextAnchor(string anchor);
+	void setContent(string text);
+	void setColour(Colour colour);
+	void setStrokeWidth(float w);
+	void setStrokeColour(Colour StkColour);
 
+};
 vector<Text> parseText(const string& filename);
-void drawText(Graphics* graphics, const vector<Text>& texts);
+void drawText(Graphics* graphics,const vector<Text>& texts);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
 
 #endif
+
+
