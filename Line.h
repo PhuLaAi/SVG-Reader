@@ -1,7 +1,7 @@
-#ifndef LINE_H
-#define LINE_H
+#ifndef Line_H
+#define Line_H
 
-#include <gdiplus.h>
+#include "stdafx.h"
 #include "Point2D.h"
 #include "Colour.h"
 #include "rapidxml.hpp"
@@ -19,8 +19,19 @@ public:
     Line();
     ~Line();
 
-    void parse(xml_node<>* node);                // Parse from SVG <line> tag
-    void draw(Graphics& graphics);               // Draw using GDI+
+    Point2D getStart();
+    Point2D getEnd();
+    float getStrokeWidth();
+    Colour getStrokeColour();
+
+    void setStart(Point2D a);
+    void setEnd(Point2D b);
+    void setStrokeWidth(float w);
+    void setStrokeColour(Colour StkColour);
+
 };
+vector<Line> parseLine(const string& filename);
+void drawLine(Graphics* graphics, vector<Line>& line);
+
 
 #endif
