@@ -127,5 +127,34 @@ vector<Polylines> parsePolylines(const string& filename) {
     }
     return polylines;
 }
+void drawPolylines(Graphics* graphics, vector<Polylines>& polylines) {
+    for (Polylines& poly : polylines) {
+        vector<Point2D> point = poly.getPoints();
+        if (point.size() < 2) {
+            continue;
+        }
 
-void drawPolylines(Graphics* graphics, vector<Polylines>& Polyliness);
+        vector<PointF> GDIPoints;
+        for (Point2D& p : point) {
+            GDIPoints.push_back(PointF(p.getX(), p.getY()));
+        }
+        // Edit
+        PointF first = GDIPoints.front();
+        PointF last = GDIPoints.back();
+        if (first.X != last.X || first.Y != last.Y) {
+            GDIPoints.push_back(first);
+        }
+
+        Colour stroke = poly.getStrokeColour();
+        float strokeWidth = poly.getStrokeWidth();
+
+        Pen pen(Color(
+            BYTE(stroke.o * 255),
+            BYTE(stroke.r * 255),
+            BYTE(stroke.g * 255),
+            BYTE(stroke.b * 255)
+        ), strokeWidth);
+
+        graphics->DrawLines(&pen, GDIPoints.data(), GDIPoints.size());
+    }
+}
