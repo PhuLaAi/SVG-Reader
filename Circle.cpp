@@ -6,6 +6,7 @@ Circle::Circle() {
     center.setY(0);
 }
 Circle::~Circle() {
+    
 }
 
 vector<Circle> parseCircle(const string& filename) {
