@@ -6,7 +6,7 @@ Polylines::~Polylines() {
 }
 
 vector<Point2D> Polylines::getPoints() {
-	return points;
+	return this->points;
 }
 float Polylines::getStrokeWidth() {
 	return stroke.getStrokeWidth();
@@ -106,7 +106,12 @@ vector<Polylines> parsePolylines(const string& filename) {
         }
         // Edit
         else {
-            poly.setColour(Colour(0.0f, 0.0f, 0.0f, 1.0f));
+            if (fillOpacity < 1.0f) {
+                poly.setColour(Colour(0.0f, 0.0f, 0.0f, fillOpacity));
+            }
+            else {
+                poly.setColour(Colour(0.0f, 0.0f, 0.0f, 0.0f));  // fully transparent
+            }
         }
         if (xml_attribute<>* pointsAttr = node->first_attribute("points")) {
             string pointsStr = pointsAttr->value();
@@ -141,9 +146,26 @@ void drawPolylines(Graphics* graphics, vector<Polylines>& polylines) {
         // Edit
         PointF first = GDIPoints.front();
         PointF last = GDIPoints.back();
+
         if (first.X != last.X || first.Y != last.Y) {
             GDIPoints.push_back(first);
         }
+        
+        Colour fill = poly.getColour();
+        if (fill.o > 0.01f) {
+            SolidBrush brush(Color(
+                BYTE(fill.o * 255),
+                BYTE(fill.r * 255),
+                BYTE(fill.g * 255),
+                BYTE(fill.b * 255)
+            ));
+
+            // Fill for closable/closed shapes only
+            if (GDIPoints.size() >= 3) {
+                graphics->FillPolygon(&brush, GDIPoints.data(), GDIPoints.size());
+            }
+        }
+        
 
         Colour stroke = poly.getStrokeColour();
         float strokeWidth = poly.getStrokeWidth();
