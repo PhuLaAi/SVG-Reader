@@ -1,17 +1,17 @@
 #ifndef Polylines_H
 #define Polylines_H
 
+
 #include "stdafx.h"
 #include "Point2D.h"
 #include "Colour.h"
 #include "rapidxml.hpp"
 
-
-using namespace Gdiplus;
 using namespace rapidxml;
+using namespace Gdiplus;
 
 class Polylines {
-protected:
+private:
     vector<Point2D> points;
     Stroke stroke;
     Colour fill;
@@ -19,18 +19,20 @@ public:
     Polylines();
     ~Polylines();
 
-    vector<Point2D> getPoints();
+    vector<Point2D>& getPoints();
+    Colour getColour();
     float getStrokeWidth();
     Colour getStrokeColour();
-    Colour getColour();
 
-    void setPoints(vector<Point2D> a);
+    void setPoints(vector<Point2D>& pts);
+    void addPoint(Point2D& pt);
+    void setColour(Colour colour);
     void setStrokeWidth(float w);
     void setStrokeColour(Colour StkColour);
-    void setColour(Colour colour);
 };
 
 vector<Polylines> parsePolylines(const string& filename);
-void drawPolylines(Graphics* graphics, vector<Polylines>& Polylines);
+void drawPolylines(Graphics* graphics, vector<Polylines>& polylines);
+
 
 #endif
