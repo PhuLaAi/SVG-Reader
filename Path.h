@@ -5,7 +5,6 @@
 #include "Point2D.h"
 #include "Colour.h"
 #include "ColourManager.h"
-#include "ColourData.h"
 #include "rapidxml.hpp"
 
 
