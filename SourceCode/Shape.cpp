@@ -1,4 +1,4 @@
-#include "shape.h"
+#include "Shape.h"
 #include "utils.h"
 
 Shape::Shape() : x(0), y(0), width(0), height(0), strokeWidth(1.0f), fillOpacity(1.0f), fillColor(Color(255, 255, 255, 255)), strokeColor(Color(255, 0, 0, 0)), hasFill(true), hasStroke(true) {}
@@ -29,3 +29,4 @@ void Shape::loadFromXML(xml_node<>* node) {
     fillColor = hasFill ? parseRGB(fillStr, (int)(255 * fillOpacity)) : Color(0, 0, 0, 0);
     strokeColor = hasStroke ? parseRGB(strokeStr, (int)(255 * strokeOpacity)) : Color(0, 0, 0, 0);
 }
+
