@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shape.h"
+#include "Shape.h"
 #include "point2d.h"
 
 class lineShape : public Shape {
@@ -12,3 +12,4 @@ public:
     void draw(Graphics& g) override;
     void loadFromXML(xml_node<>* node) override;
 };
+
