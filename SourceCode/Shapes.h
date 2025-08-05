@@ -1,17 +1,20 @@
-#ifndef Shapes_H
-#define Shapes_H
+#pragma once
 
-#include "stdafx.h"
-#include "Circle.h"
-#include "Line.h"
-#include "Polylines.h"
-#include "Ellipses.h"
+#include "libs.h"
 
-struct Shapes {
-    vector<Circle> circles;
-    vector<Line> lines;
-    vector<Polylines> polylines;
-    vector<Ellipses> ellipses;
+class Shape {
+protected:
+    int x, y, width, height;
+    float strokeWidth, fillOpacity;
+    Color fillColor;
+    Color strokeColor;
+    bool hasFill;
+    bool hasStroke;
+
+public:
+    Shape();
+    virtual void draw(Graphics& g) = 0;
+    virtual void loadFromXML(xml_node<>* node);
+    virtual ~Shape() {}
+
 };
-
-#endif
