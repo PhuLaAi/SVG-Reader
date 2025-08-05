@@ -1,37 +1,14 @@
-#ifndef Line_H
-#define Line_H
+#pragma once
 
-#include "stdafx.h"
-#include "Point2D.h"
-#include "Colour.h"
-#include "rapidxml.hpp"
+#include "shape.h"
+#include "point2d.h"
 
-using namespace Gdiplus;
-using namespace rapidxml;
-
-class Line {
-protected:
-    Point2D start;
-    Point2D end;
-    Stroke stroke;
+class lineShape : public Shape {
+private:
+    point2D start, end;
 
 public:
-    Line();
-    ~Line();
-
-    Point2D getStart();
-    Point2D getEnd();
-    float getStrokeWidth();
-    Colour getStrokeColour();
-
-    void setStart(Point2D a);
-    void setEnd(Point2D b);
-    void setStrokeWidth(float w);
-    void setStrokeColour(Colour StkColour);
-
+    lineShape();
+    void draw(Graphics& g) override;
+    void loadFromXML(xml_node<>* node) override;
 };
-vector<Line> parseLine(const string& filename);
-void drawLine(Graphics* graphics, vector<Line>& line);
-
-
-#endif
