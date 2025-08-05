@@ -1,24 +1,10 @@
-#ifndef Circle_H
-#define Circle_H
+#pragma once
+#include "ellipse.h"
 
-#include "Ellipses.h"
-#include "rapidxml.hpp"
-
-using namespace rapidxml;
-using namespace Gdiplus;
-
-class Circle : public Ellipses {
+class circleShape : public ellipseShape {
 public:
-    Circle();
-    ~Circle();
+    circleShape();
+    void loadFromXML(xml_node<>* node) override;
+
 };
-
-vector<Circle> parseCircle(const string& filename);
-void drawCircle(Graphics* graphics, vector<Circle>& circles);
-
-#endif
-
-
-
-#endif
 
