@@ -1,40 +1,15 @@
-#ifndef Ellipse_H
-#define Ellipse_H
+#pragma once
 
-#include "stdafx.h"
-#include "Point2D.h"
-#include "Colour.h"
-#include "rapidxml.hpp"
+#include "shape.h"
+#include "point2D.h"
 
-using namespace Gdiplus;
-using namespace rapidxml;
-
-class Ellipses {
+class ellipseShape : public Shape {
 protected:
-    float rx, ry;
-    Point2D center;
-    Colour fill;
-    Stroke stroke;
+    point2D center;
+    int rx, ry;
+
 public:
-    Ellipses();
-    virtual ~Ellipses();
-
-    float getRX();
-    float getRY();
-    Point2D getCenter();
-    Colour getColour();
-    float getStrokeWidth();
-    Colour getStrokeColour();
-
-    void setRX(float x);
-    void setRY(float y);
-    void setCenter(float x, float y);
-    void setColour(Colour colour);
-    void setStrokeWidth(float w);
-    void setStrokeColour(Colour stkColour);
+    ellipseShape();
+    void draw(Graphics& g) override;
+    void loadFromXML(xml_node<>* node) override;
 };
-
-vector<Ellipses> parseEllipses(const string& filename);
-void drawEllipses(Graphics* graphics, vector<Ellipses>& ellipses);
-
-#endif
