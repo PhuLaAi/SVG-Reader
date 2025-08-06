@@ -19,11 +19,12 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
         else if (tag == "polygon") shape = new polygonShape();
         else if (tag == "line") shape = new lineShape();
         else if (tag == "polyline") shape = new polylineShape();
-        else if (tag == "text") shape = new textShape();
+        //else if (tag == "text") shape = new textShape();
 
         if (shape) {
             shape->loadFromXML(node);
             shapes.push_back(shape);
         }
     }
+
 }
