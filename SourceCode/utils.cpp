@@ -13,7 +13,8 @@ int parseInt(const char* s, int def) {
 }
 
 float parseFloat(const char* s, float def) {
-    return s ? atof(s) : def;
+    if (!s || strlen(s) == 0) return def;
+    return atof(s);
 }
 
 vector<point2D> parsePoints(const string& pointsStr) {
@@ -37,4 +38,41 @@ vector<Point> toGdiplusPoints(const vector<point2D>& pts) {
         result.emplace_back(p.x, p.y);
     }
     return result;
+}
+
+bool isNumber(const string& s) {
+    if (s.empty()) return false;
+    char* end;
+    strtod(s.c_str(), &end);
+    return (*end == '\0');
+}
+
+// Tách từng token từ chuỗi "d"
+vector<string> tokenizePath(const string& d) {
+    vector<string> tokens;
+    string token;
+    for (size_t i = 0; i < d.length(); ++i) {
+        char c = d[i];
+        if (isalpha(c)) {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+            tokens.emplace_back(1, c);
+        } else if (c == '-' || c == '+' || c == '.' || isdigit(c)) {
+            if (c == '-' && !token.empty() && (isdigit(token.back()) || token.back() == '.')) {
+                tokens.push_back(token);
+                token = "-";
+            } else {
+                token += c;
+            }
+        } else if (c == ',' || isspace(c)) {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+        }
+    }
+    if (!token.empty()) tokens.push_back(token);
+    return tokens;
 }
