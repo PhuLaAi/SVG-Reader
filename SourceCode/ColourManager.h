@@ -5,11 +5,12 @@
 
 class ColourManager {
 private:
-    static unordered_map<string, ColourManager> namedColors;
+    static unordered_map<string, Colour> namedColors;
 
 public:
     static void loadNamedColours(const string& filename); 
-    static ColourManager getColourByName(const string& name, float opacity);
+    static Colour getColourByName(const string& name, float opacity);
 };
 
 #endif
+
