@@ -19,7 +19,6 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
         else if (tag == "polygon") shape = new polygonShape();
         else if (tag == "line") shape = new lineShape();
         else if (tag == "polyline") shape = new polylineShape();
-        //else if (tag == "text") shape = new textShape();
         else if (tag == "g") shape = new groupShape();
 
         if (shape) {
@@ -28,6 +27,15 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
         }
     }
 
+}
+
+const char* getAttrRecursive(xml_node<>* node, const char* name) {
+    while (node) {
+        xml_attribute<>* attr = node->first_attribute(name);
+        if (attr) return attr->value();
+        node = node->parent();
+    }
+    return "";
 }
 
 vector<text> parseText(const string& filename) {
@@ -150,4 +158,5 @@ vector<text> parseText(const string& filename) {
 
     return texts;
 }
+
 
