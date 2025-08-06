@@ -1,7 +1,6 @@
 #pragma once
 
 #include <algorithm>
-#include <iostream>
 #include <windows.h>
 #include <gdiplus.h>
 #include <string>
@@ -16,4 +15,5 @@ using namespace std;
 using namespace Gdiplus;
 
 using namespace rapidxml;
+
 
