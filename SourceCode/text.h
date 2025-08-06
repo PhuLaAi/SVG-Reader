@@ -2,16 +2,17 @@
 
 #include "libs.h"
 #include "point2D.h"
-#include "Colour.h"
-#include <algorithm>
-
+#include "ColorManager.h"
+#include "utils.h"
 class text {
 protected:
 	float fontSize, dx, dy;
 	point2D textPos;
 	string content, fontFamily, textAnchor, fontStyle;
-	Colour fill;
-	Stroke stroke;
+	Color fill;
+	Color strokeColor;
+	float strokeWidth;
+	string fillStr;
 public:
 	text();
 	~text();
@@ -24,9 +25,10 @@ public:
 	string getFontStyle();
 	string getTextAnchor();
 	string& getContent();
-	Colour getColour();
+	Color getColour();
 	float getStrokeWidth();
-	Colour getStrokeColour();
+	Color getStrokeColour();
+	string getFillStr();
 
 	// Setters
 	void setTextPos(float x, float y);
@@ -37,10 +39,10 @@ public:
 	void setFontStyle(string style);
 	void setTextAnchor(string anchor);
 	void setContent(string text);
-	void setColour(Colour colour);
+	void setColour(Color colour);
 	void setStrokeWidth(float w);
-	void setStrokeColour(Colour StkColour);
-
+	void setStrokeColour(Color StkColour);
+	void setFillStr(const string& str);
 };
-void drawText(Graphics* graphics, vector<text>& texts);
 
+void drawText(Graphics* graphics, vector<text>& texts);
