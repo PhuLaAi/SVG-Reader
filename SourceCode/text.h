@@ -13,6 +13,7 @@ protected:
 	Color strokeColor;
 	float strokeWidth;
 	string fillStr;
+	string strokeStr;
 public:
 	text();
 	~text();
@@ -29,7 +30,7 @@ public:
 	float getStrokeWidth();
 	Color getStrokeColour();
 	string getFillStr();
-
+	string getStrokeStr();
 	// Setters
 	void setTextPos(float x, float y);
 	void setDx(float dx);
@@ -43,6 +44,7 @@ public:
 	void setStrokeWidth(float w);
 	void setStrokeColour(Color StkColour);
 	void setFillStr(const string& str);
+	void setStrokeStr(const string& str);
 };
 
 void drawText(Graphics* graphics, vector<text>& texts);
