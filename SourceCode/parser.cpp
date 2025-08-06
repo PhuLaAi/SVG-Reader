@@ -143,8 +143,15 @@ vector<text> parseText(const string& filename) {
             }
 
             string content = node->value();
-            if (content.empty() && node->first_node())
-                content = node->first_node()->value();
+            for (xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
+             if (child->type() == node_data) {
+                 content += child->value();
+             }
+         }
+         if (content.empty()) {
+             content = node->value(); 
+         }
+         t.setContent(content);
             t.setContent(content);
 
             texts.push_back(t);
@@ -159,6 +166,7 @@ vector<text> parseText(const string& filename) {
 
     return texts;
 }
+
 
 
 
