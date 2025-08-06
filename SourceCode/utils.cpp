@@ -76,3 +76,31 @@ vector<string> tokenizePath(const string& d) {
     if (!token.empty()) tokens.push_back(token);
     return tokens;
 }
+
+Gdiplus::Color parseColourString(const std::string& colorStr, float opacity) {
+    std::string str = colorStr;
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    str.erase(remove_if(str.begin(), str.end(), ::isspace), str.end());
+
+    // HEX #RRGGBB
+    if (str[0] == '#' && str.length() == 7) {
+        int r = std::stoi(str.substr(1, 2), nullptr, 16);
+        int g = std::stoi(str.substr(3, 2), nullptr, 16);
+        int b = std::stoi(str.substr(5, 2), nullptr, 16);
+        return Gdiplus::Color(BYTE(opacity * 255), r, g, b);
+    }
+
+    // RGB / RGBA
+    if (str.find("rgb(") == 0 || str.find("rgba(") == 0) {
+        std::regex rgbRegex(R"(rgba?\((\d+),(\d+),(\d+)(?:,([\d.]+))?\))");
+        std::smatch match;
+        if (std::regex_match(str, match, rgbRegex)) {
+            int r = std::stoi(match[1]);
+            int g = std::stoi(match[2]);
+            int b = std::stoi(match[3]);
+            float a = match[4].matched ? std::stof(match[4]) : 1.0f;
+            return Gdiplus::Color(BYTE(opacity * a * 255), r, g, b);
+        }
+    }
+    return ColorManager::getColourByName(str, opacity);
+}
