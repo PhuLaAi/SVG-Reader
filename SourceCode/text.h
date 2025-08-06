@@ -2,7 +2,7 @@
 
 #include "libs.h"
 #include "point2D.h"
-#include "ColorManager.h"
+#include "ColourManager.h"
 #include "utils.h"
 class text {
 protected:
@@ -48,3 +48,4 @@ public:
 };
 
 void drawText(Graphics* graphics, vector<text>& texts);
+
