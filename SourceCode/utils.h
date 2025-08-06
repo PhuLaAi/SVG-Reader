@@ -10,3 +10,4 @@ vector<point2D> parsePoints(const string& pointsStr);
 vector<Point> toGdiplusPoints(const vector<point2D>& pts);
 bool isNumber(const string& s);
 vector<string> tokenizePath(const string& d);
+Gdiplus::Color parseColourString(const std::string& colorStr, float opacity);
