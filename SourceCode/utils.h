@@ -8,3 +8,5 @@ int parseInt(const char* s, int def = 0);
 float parseFloat(const char* s, float def = 0.0f);
 vector<point2D> parsePoints(const string& pointsStr);
 vector<Point> toGdiplusPoints(const vector<point2D>& pts);
+bool isNumber(const string& s);
+vector<string> tokenizePath(const string& d);
