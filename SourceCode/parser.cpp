@@ -19,6 +19,7 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
         else if (tag == "polygon") shape = new polygonShape();
         else if (tag == "line") shape = new lineShape();
         else if (tag == "polyline") shape = new polylineShape();
+        else if (tag == "path") shape = new pathShape();
         else if (tag == "g") shape = new groupShape();
 
         if (shape) {
@@ -158,5 +159,6 @@ vector<text> parseText(const string& filename) {
 
     return texts;
 }
+
 
 
