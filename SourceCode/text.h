@@ -42,5 +42,5 @@ public:
 	void setStrokeColour(Colour StkColour);
 
 };
-vector<text> parseText(const string& filename);
 void drawText(Graphics* graphics, vector<text>& texts);
+
