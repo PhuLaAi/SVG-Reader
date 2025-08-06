@@ -15,5 +15,7 @@
 #include "group.h"
 
 void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes);
+vector<text> parseText(const string& filename);
+
 
 
