@@ -1,4 +1,4 @@
-#include "Line.h"
+#include "line.h"
 #include "utils.h"
 
 lineShape::lineShape() : start(0, 0), end(0, 0) {}
@@ -19,4 +19,5 @@ void lineShape::draw(Graphics& g) {
         g.DrawLine(&pen, start.x, start.y, end.x, end.y);
     }
 }
+
 
