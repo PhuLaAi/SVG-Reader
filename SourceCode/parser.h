@@ -11,7 +11,9 @@
 #include "polyline.h"
 #include "line.h"
 #include "text.h"
+#include "path.h"
 #include "group.h"
 
 void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes);
+
 
