@@ -20,6 +20,7 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
         else if (tag == "line") shape = new lineShape();
         else if (tag == "polyline") shape = new polylineShape();
         //else if (tag == "text") shape = new textShape();
+        else if (tag == "g") shape = new groupShape();
 
         if (shape) {
             shape->loadFromXML(node);
@@ -28,3 +29,4 @@ void LoadShapesFromSVG(const char* filename, vector<Shape*>& shapes) {
     }
 
 }
+
