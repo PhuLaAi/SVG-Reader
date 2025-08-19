@@ -1,5 +1,5 @@
-#ifndef Lib_H
-#define Lib_H
+#ifndef _LIB_H_
+#define _LIB_H_
 
 #include <iostream>
 #include <vector>
@@ -23,28 +23,25 @@ using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
-#include "Color.h"
-#include "Point.h"
-#include "Gradient.h"
-#include "LinearGradient.h"
-#include "RadialGradient.h"
-#include "Figure.h"
-#include "Group.h"
-#include "Polygon.h"
-#include "Rectangle.h"
-#include "Ellipse.h"
 #include "Circle.h"
-#include "Polyline.h"
-#include "Line.h"
-#include "Text.h"
-#include "Path.h"
+#include "Color.h"
+#include "Ellipse.h"
 #include "FactoryFigure.h"
-#include "Viewbox.h"
-#include "Parser.h"
-#include "Renderer.h"
+#include "Figure.h"
+#include "Gradient.h"
+#include "Group.h"
 #include "Image.h"
+#include "LinearGradient.h"
+#include "line.h"
+#include "parser.h"
+#include "path.h"
+#include "point2D.h"
+#include "polygon.h"
+#include "polyline.h"
+#include "RadialGradient.h"
+#include "rectangle.h"
+#include "Renderer.h"
+#include "text.h"
+#include "Viewbox.h"
 
 #endif 
-
-
-
