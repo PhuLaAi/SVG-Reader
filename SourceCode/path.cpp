@@ -1,87 +1,419 @@
-#include "path.h"
+#include "Lib.h"
 
-using namespace std;
-
-pathShape::pathShape() {}
-
-void pathShape::loadFromXML(xml_node<>* node) {
-    Shape::loadFromXML(node);
-    d = node->first_attribute("d") ? node->first_attribute("d")->value() : "";
+path::path() : figure() {
+	strokeLineJoin = "miter";
+	strokeLineCap = "butt";
+	fillRule = "nonzero";
 }
 
-void pathShape::draw(Graphics& g) {
-    GraphicsPath path;
-    parsePathData(d, path);
+path::~path() {}
 
-    if (hasFill) {
-        SolidBrush brush(fillColor);
-        g.FillPath(&brush, &path);
-    }
-    if (hasStroke) {
-        Pen pen(strokeColor, strokeWidth);
-        g.DrawPath(&pen, &path);
-    }
+void path::updateProperty() {
+	ofstream ofs("test.txt", ios::out);
+	stringstream ss(line_str);
+	string property, val, temp;
+
+	while (ss >> property) {
+		getline(ss, temp, '"');
+		getline(ss, val, '"');
+		if (property == "stroke-linejoin")
+			this->strokeLineJoin = val;
+		else if (property == "stroke-linecap")
+			this->strokeLineCap = val;
+		else if (property == "d") {
+			if (val[0] != 'M' && val[0] != 'm')
+				return;
+			for (int i = 0; i < val.size(); i++) {
+				if (isalpha(val[i]) && val[i] != 'e') {
+					if (i + 1 < val.size() && val[i + 1] != ' ')
+						val.insert(i + 1, " ");
+					if (i - 1 > -1 && isdigit(val[i - 1]))
+						val.insert(i, " ");
+				}
+				if (val[i] == ',')
+					val[i] = ' ';
+				if (val[i] == '-' && val[i - 1] != ' ' && val[i - 1] != 'e')
+					val.insert(i, " ");
+			}
+
+			for (int i = 0; i < val.size(); i++) {
+				if (val[i] == '.') {
+					int j = i + 1;
+					for (j; j < val.size(); j++)
+						if (val[j] == '.')
+							break;
+					int t = i + 1;
+					for (t; t < j; ++t)
+						if (val[t] == ' ')
+							break;
+					if (t == j) {
+						val.insert(j, " ");
+						i = j + 1;
+					}
+				}
+			}
+
+			for (int i = 0; i < val.size(); i++) {
+				if (isalpha(val[i]) && val[i] != 'e') {
+					int j = i + 1;
+					while ((!isalpha(val[j]) || val[j] == 'e') && j < val.size())
+						j++;
+					string pointStr = val.substr(i, j - i);
+					pair<char, vector<float>> pr;
+					pr.first = pointStr[0];
+					pointStr.erase(0, 2);
+
+					stringstream ss(pointStr);
+
+					if (pr.first == 'm') {
+						bool first = true;
+						string x = "", y = "";
+						while (ss >> x >> y) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(x) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y) + vct[n - 1].second[m - 1]);
+									}
+								}
+								else {
+									pr.second.push_back(stof(x));
+									pr.second.push_back(stof(y));
+								}
+								first = false;
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(x) + pr.second[n - 2]);
+									pr.second.push_back(stof(y) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'l') {
+						bool first = true;
+						string x = "", y = "";
+						while (ss >> x >> y) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(x) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y) + vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(x) + pr.second[n - 2]);
+									pr.second.push_back(stof(y) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'H') {
+						string x = "";
+						while (ss >> x) {
+							pr.second.push_back(stof(x));
+							int n = vct.size();
+							if (n > 0) {
+								int m = vct[n - 1].second.size();
+								if (m > 1)
+									pr.second.push_back(vct[n - 1].second[m - 1]);
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'h') {
+						bool first = true;
+						string x = "";
+						while (ss >> x) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(x) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(x) + pr.second[n - 2]);
+									pr.second.push_back(pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'V') {
+						string y = "";
+						while (ss >> y) {
+							int n = vct.size();
+							if (n > 0) {
+								int m = vct[n - 1].second.size();
+								if (m > 1)
+									pr.second.push_back(vct[n - 1].second[m - 2]);
+							}
+							pr.second.push_back(stof(y));
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'v') {
+						bool first = true;
+						string y = "";
+						while (ss >> y) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y) + vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(pr.second[n - 2]);
+									pr.second.push_back(stof(y) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'T' || pr.first == 't') {
+						bool first = true;
+						string x = "", y = "";
+						while (ss >> x >> y) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (vct[n - 1].first == 'Q' || vct[n - 1].first == 'q' || vct[n - 1].first == 'T' || vct[n - 1].first == 't') {
+										if (m > 3) {
+											float oldx2 = vct[n - 1].second[m - 4];
+											float oldy2 = vct[n - 1].second[m - 3];
+											float curx = vct[n - 1].second[m - 2];
+											float cury = vct[n - 1].second[m - 1];
+											pr.second.push_back(2.f * curx - oldx2);
+											pr.second.push_back(2.f * cury - oldy2);
+										}
+									}
+									else {
+										if (m > 1) {
+											pr.second.push_back(vct[n - 1].second[m - 2]);
+											pr.second.push_back(vct[n - 1].second[m - 1]);
+										}
+									}
+
+									if (pr.first == 'T') {
+										pr.second.push_back(stof(x));
+										pr.second.push_back(stof(y));
+									}
+									else if (m > 1) {
+										pr.second.push_back(stof(x) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y) + vct[n - 1].second[m - 1]);
+									}
+									first = false;
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 3) {
+									float oldx2 = pr.second[n - 4];
+									float oldy2 = pr.second[n - 3];
+									float curx = pr.second[n - 2];
+									float cury = pr.second[n - 1];
+									pr.second.push_back(2.f * curx - oldx2);
+									pr.second.push_back(2.f * cury - oldy2);
+								}
+
+								if (pr.first == 'T') {
+									pr.second.push_back(stof(x));
+									pr.second.push_back(stof(y));
+								}
+								else {
+									pr.second.push_back(stof(x) + pr.second[n - 2]);
+									pr.second.push_back(stof(y) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'c') {
+						bool first = true;
+						string x1 = "", y1 = "", x2 = "", y2 = "", x3 = "", y3 = "";
+						while (ss >> x1 >> y1 >> x2 >> y2 >> x3 >> y3) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(x1) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y1) + vct[n - 1].second[m - 1]);
+										pr.second.push_back(stof(x2) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y2) + vct[n - 1].second[m - 1]);
+										pr.second.push_back(stof(x3) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y3) + vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(x1) + pr.second[n - 2]);
+									pr.second.push_back(stof(y1) + pr.second[n - 1]);
+									pr.second.push_back(stof(x2) + pr.second[n - 2]);
+									pr.second.push_back(stof(y2) + pr.second[n - 1]);
+									pr.second.push_back(stof(x3) + pr.second[n - 2]);
+									pr.second.push_back(stof(y3) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 's' || pr.first == 'q') {
+						bool first = true;
+						string x1 = "", y1 = "", x2 = "", y2 = "";
+						while (ss >> x1 >> y1 >> x2 >> y2) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(x1) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y1) + vct[n - 1].second[m - 1]);
+										pr.second.push_back(stof(x2) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y2) + vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(x1) + pr.second[n - 2]);
+									pr.second.push_back(stof(y1) + pr.second[n - 1]);
+									pr.second.push_back(stof(x2) + pr.second[n - 2]);
+									pr.second.push_back(stof(y2) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'a') {
+						bool first = true;
+						string rx = "", ry = "", xAR = "0", lAF = "", sF = "", x = "", y = "";
+						// xAR <=> x_axis_rotation, lAF <=> large_arc_flag, sF <=> sweep_flag
+						while (ss >> rx >> ry >> xAR >> lAF >> sF >> x >> y) {
+							if (first) {
+								int n = vct.size();
+								if (n > 0) {
+									int m = vct[n - 1].second.size();
+									if (m > 1) {
+										pr.second.push_back(stof(rx));
+										pr.second.push_back(stof(ry));
+										pr.second.push_back(stof(xAR));
+										pr.second.push_back(stof(lAF));
+										pr.second.push_back(stof(sF));
+										pr.second.push_back(stof(x) + vct[n - 1].second[m - 2]);
+										pr.second.push_back(stof(y) + vct[n - 1].second[m - 1]);
+										first = false;
+									}
+								}
+							}
+							else {
+								int n = pr.second.size();
+								if (n > 1) {
+									pr.second.push_back(stof(rx));
+									pr.second.push_back(stof(ry));
+									pr.second.push_back(stof(xAR));
+									pr.second.push_back(stof(lAF));
+									pr.second.push_back(stof(sF));
+									pr.second.push_back(stof(x) + pr.second[n - 2]);
+									pr.second.push_back(stof(y) + pr.second[n - 1]);
+								}
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else if (pr.first == 'Z' || pr.first == 'z') {
+						int n = vct.size();
+						if (n > 0) {
+							int m = vct[n - 1].second.size();
+							if (m > 1) {
+								pr.second.push_back(vct[n - 1].second[m - 2]);							
+								pr.second.push_back(vct[n - 1].second[m - 1]);
+							}
+						}
+						vct.push_back(pr);
+					}
+
+					else { // M, L, C, S, Q, A
+						string token;
+						while (ss >> token)
+							pr.second.push_back(stof(token));
+						vct.push_back(pr);
+					}
+				}
+			}
+		}
+	}
 }
 
+string path::getStrokeLineJoin() {
+	return this->strokeLineJoin;
+}
 
+string path::getStrokeLineCap() {
+	return this->strokeLineCap;
+}
 
-void parsePathData(const string& d, GraphicsPath& path) {
-    vector<string> tokens = tokenizePath(d);
-    PointF current(0, 0), start(0, 0);
-    char cmd = 0;
+string path::getFillRule() {
+	return this->fillRule;
+}
 
-    size_t i = 0;
-    while (i < tokens.size()) {
-        if (isalpha(tokens[i][0])) cmd = tokens[i++][0];
-        bool relative = islower(cmd);
+void path::setFillRule(string fillRule) {
+	this->fillRule = fillRule;
+}
 
-        if (cmd == 'M' || cmd == 'm') {
-            float x = parseFloat(tokens[i++].c_str());
-            float y = parseFloat(tokens[i++].c_str());
-            current = PointF(relative ? current.X + x : x, relative ? current.Y + y : y);
-            path.StartFigure();
-            start = current;
-        } else if (cmd == 'L' || cmd == 'l') {
-            float x = parseFloat(tokens[i++].c_str());
-            float y = parseFloat(tokens[i++].c_str());
-            PointF p(relative ? current.X + x : x, relative ? current.Y + y : y);
-            path.AddLine(current, p);
-            current = p;
-        } else if (cmd == 'H' || cmd == 'h') {
-            float dx = parseFloat(tokens[i++].c_str());
-            float x = relative ? current.X + dx : dx;
-            path.AddLine(current, PointF(x, current.Y));
-            current = PointF(x, current.Y);
-        } else if (cmd == 'V' || cmd == 'v') {
-            float dy = parseFloat(tokens[i++].c_str());
-            float y = relative ? current.Y + dy : dy;
-            path.AddLine(current, PointF(current.X, y));
-            current = PointF(current.X, y);
-        } else if (cmd == 'C' || cmd == 'c') {
-            float dx1 = parseFloat(tokens[i++].c_str());
-            float dy1 = parseFloat(tokens[i++].c_str());
-            float dx2 = parseFloat(tokens[i++].c_str());
-            float dy2 = parseFloat(tokens[i++].c_str());
-            float dx = parseFloat(tokens[i++].c_str());
-            float dy = parseFloat(tokens[i++].c_str());
+void path:: setStrokeLineJoin(string linejoin) {
+	this->strokeLineJoin = linejoin;
+}
 
-            PointF p1 = relative ? PointF(current.X + dx1, current.Y + dy1) : PointF(dx1, dy1);
-            PointF p2 = relative ? PointF(current.X + dx2, current.Y + dy2) : PointF(dx2, dy2);
-            PointF p3 = relative ? PointF(current.X + dx, current.Y + dy) : PointF(dx, dy);
+void path:: setStrokeLineCap(string linecap) {
+	this->strokeLineCap = linecap;
+}
 
-            path.AddBezier(current, p1, p2, p3);
-            current = p3;
-        } else if (cmd == 'L' || cmd == 'l') {
-            float x = parseFloat(tokens[i++].c_str());
-            float y = parseFloat(tokens[i++].c_str());
-            PointF p(relative ? current.X + x : x, relative ? current.Y + y : y);
-            path.AddLine(current, p);
-            current = p;
-        } else if (cmd == 'Z' || cmd == 'z') {
-            path.CloseFigure();
-            current = start;
-        } else {
-            ++i;
-        }
-    }
+void path:: setVct(vector<pair<char, vector<float>>> vct) {
+	this->vct = vct;
+}
+
+vector<pair<char, vector<float>>> path::getProp() {
+	return this->vct;
 }
