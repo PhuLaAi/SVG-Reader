@@ -1,14 +1,18 @@
-#pragma once
+#ifndef _POLYLINE_H_
+#define _POLYLINE_H_
 
-#include "shape.h"
-#include "point2D.h"
-
-class polylineShape : public Shape {
+class polyline : public figure {
 private:
-    vector<point2D> points;
+	vector<point> Vers;
 
 public:
-    polylineShape();
-    void draw(Graphics& g) override;
-    void loadFromXML(xml_node<>* node) override;
+	polyline();
+	~polyline();
+
+	void updateProperty();
+
+	vector<point> getVers();
+	void setVers(vector<point>);
 };
+
+#endif
