@@ -1,14 +1,18 @@
-#pragma once
+#ifndef _POLYGON_H_
+#define _POLYGON_H_
 
-#include "shape.h"
-#include "point2D.h"
-
-class polygonShape : public Shape {
-protected:
-    vector<point2D> points;
+class polygon : public figure {
+private:
+	vector<point> Vers;
 
 public:
-    polygonShape();
-    void draw(Graphics& g) override;
-    void loadFromXML(xml_node<>* node) override;
+	polygon();
+	~polygon();
+
+	void setVers(vector<point>);
+	vector<point> getVers();
+
+	void updateProperty();
 };
+
+#endif
