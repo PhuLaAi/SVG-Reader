@@ -1,24 +1,43 @@
-#include "polyline.h"
-#include "utils.h"
+#include "Lib.h"
 
-polylineShape::polylineShape() {}
-
-void polylineShape::loadFromXML(xml_node<>* node) {
-    Shape::loadFromXML(node);
-    const char* pts = node->first_attribute("points") ? node->first_attribute("points")->value() : "";
-    points = parsePoints(pts);
+polyline::polyline() :figure() {
+	fill.r = fill.g = fill.b = 0;
+	fill.opacity = 1;
 }
 
-void polylineShape::draw(Graphics& g) {
-    if (points.size() < 2) return;
-    auto gdipPoints = toGdiplusPoints(points);
+polyline::~polyline() {
+	Vers = {};
+}
 
-    if (hasFill) {
-        SolidBrush brush(fillColor);
-        g.FillPolygon(&brush, gdipPoints.data(), gdipPoints.size());
-    }
-    if (hasStroke) {
-        Pen pen(strokeColor, strokeWidth);
-        g.DrawLines(&pen, gdipPoints.data(), gdipPoints.size());
-    }
+void polyline::updateProperty() {
+	stringstream ss(line_str);
+	string property, val, temp;
+
+	while (ss >> property) {
+		getline(ss, temp, '"');
+		getline(ss, val, '"');
+
+		if (property == "points" || property == "point") {
+			for (int i = 0; i < val.size(); i++)
+				if (val[i] == ',' || val[i] == '/')
+					val[i] = ' ';
+
+			stringstream ss(val);
+			string x = "", y = "";
+			while (ss >> x >> y) {
+				point p;
+				p.setX(stof(x));
+				p.setY(stof(y));
+				Vers.push_back(p);
+			}
+		}
+	}
+}
+
+vector<point> polyline::getVers() {
+	return this->Vers;
+}
+
+void polyline::setVers(vector<point> Vers) {
+	this->Vers = Vers;
 }
