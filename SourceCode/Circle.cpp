@@ -12,7 +12,7 @@ circle::~circle() {
 	this->setRy(0);
 }
 
-void circle::modifyAttribute() {
+void circle::updateProperty() {
 	stringstream ss(line_str);
 	string attribute, val, temp;
 
