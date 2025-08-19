@@ -1,16 +1,26 @@
-#pragma once
-#include "shape.h"
-#include "point2D.h"
-#include "utils.h"
-#include "libs.h"
+#ifndef _PATH_H_
+#define _PATH_H_
 
-class pathShape : public Shape {
+class path : public figure {
 private:
-    string d;
+	vector<pair<char, vector<float>>> vct;
+	string strokeLineJoin, strokeLineCap, fillRule;
+
 public:
-    pathShape();
-    void loadFromXML(xml_node<>* node) override;
-    void draw(Graphics& g) override;
+	path();
+	~path();
+
+	vector<pair<char, vector<float>>> getProp();
+	string getStrokeLineJoin();
+	string getStrokeLineCap();
+	string getFillRule();
+
+	void setStrokeLineJoin(string);
+	void setStrokeLineCap(string);
+	void setFillRule(string);
+	void setVct(vector<pair<char, vector<float>>>);
+
+	void updateProperty();
 };
 
-void parsePathData(const string& d, GraphicsPath& path);
+#endif
