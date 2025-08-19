@@ -1,18 +1,24 @@
-#pragma once
+#ifndef _POINT_H_
+#define _POINT_H
 
-#include "libs.h"
+class point {
+private:
+	float x, y;
+	bool intersect;
 
-class point2D {
 public:
-    int x, y;
-    point2D(int x = 0, int y = 0) : x(x), y(y) {}
-    int getX() { return x; };
-    int getY() { return y; };
+	point();
+	~point();
 
-    void setX(float a) {
-        x = a;
-    };
-    void setY(float b) {
-        y = b;
-    };
-}; 
+	float getX();
+	float getY();
+	bool getIntersect();
+
+	void setIntersect(bool);
+	void setX(float);
+	void setY(float);
+
+	friend bool operator == (const point&, const point&);
+};
+
+#endif
