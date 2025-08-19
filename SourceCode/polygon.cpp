@@ -1,26 +1,43 @@
-#include "polygon.h"
-#include "utils.h"
+#include "Lib.h"
 
-polygonShape::polygonShape() {}
-
-void polygonShape::loadFromXML(xml_node<>* node) {
-    Shape::loadFromXML(node);
-
-    const char* pts = node->first_attribute("points") ? node->first_attribute("points")->value() : "";
-    points = parsePoints(pts);
+polygon::polygon() : figure() {
+	Vers = {};
 }
 
-void polygonShape::draw(Graphics& g) {
-    if (points.size() < 2) return;
-    auto gdipPoints = toGdiplusPoints(points);
-
-    if (hasFill) {
-        SolidBrush brush(fillColor);
-        g.FillPolygon(&brush, gdipPoints.data(), gdipPoints.size());
-    }
-    if (hasStroke) {
-        Pen pen(strokeColor, strokeWidth);
-        g.DrawPolygon(&pen, gdipPoints.data(), gdipPoints.size());
-    }
+polygon::~polygon() {
+	Vers = {};
 }
 
+void polygon::updateProperty() {
+
+	stringstream ss(line_str);
+	string property, val, temp;
+
+	while (ss >> property) {
+		getline(ss, temp, '"');
+		getline(ss, val, '"');
+		if (property == "points" || property == "point") {
+			for (int i = 0; i < val.size(); i++)
+				if (val[i] == ',')
+					val[i] = ' ';
+
+			stringstream ss(val);
+			string x = "", y = "";
+			while (ss >> x >> y) {
+				point p;
+				p.setX(stof(x));
+				p.setY(stof(y));
+				Vers.push_back(p);
+			}
+		}
+	}
+
+}
+
+vector<point> polygon::getVers() {
+	return this->Vers;
+}
+
+void polygon::setVers(vector<point> Vers) {
+	this->Vers = Vers;
+}
