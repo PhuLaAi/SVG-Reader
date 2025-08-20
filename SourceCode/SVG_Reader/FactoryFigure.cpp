@@ -59,6 +59,3 @@ factoryfigure::factoryfigure() {
 unordered_map<string, int> factoryfigure::getFigureId() {
 	return this->figureId;
 }
-
-
-

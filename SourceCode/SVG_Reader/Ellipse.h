@@ -1,5 +1,5 @@
-#ifndef Ellipse_H
-#define Ellipse_H
+#ifndef _ELLIPSE_H_
+#define _ELLIPSE_H_
 
 class ellipse : public figure {
 protected:
@@ -18,8 +18,7 @@ public:
 	void setRx(float);
 	void setRy(float);
 
-	void modifyAttribute();
+	void updateProperty();
 };
 
 #endif 
-

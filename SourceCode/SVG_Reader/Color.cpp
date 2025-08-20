@@ -23,5 +23,3 @@ void stroke::setStrokeColor(color strokeColor) {
 void stroke::setStrokeWidth(float strokeWidth) {
 	this->strokeWidth = strokeWidth;
 }
-
-

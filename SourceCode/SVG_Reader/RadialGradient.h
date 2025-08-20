@@ -17,7 +17,7 @@ public:
 
 	radialgradient();
 	radialgradient(const radialgradient&);
-	radialgradient& operator=(const radialgradient&);
+	radialgradient& operator = (const radialgradient&);
 
 	bool getIsLink();
 	void setIsLink(bool);

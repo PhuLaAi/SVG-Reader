@@ -12,7 +12,7 @@ ellipse::~ellipse() {
 	center.setY(0);
 }
 
-void ellipse::modifyAttribute() {
+void ellipse::updateProperty() {
 	stringstream ss(line_str);
 	string property, val, temp;
 
@@ -55,4 +55,3 @@ void ellipse::setRx(float rx) {
 void ellipse::setRy(float ry) {
 	this->ry = ry;
 }
-

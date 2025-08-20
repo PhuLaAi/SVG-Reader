@@ -1,5 +1,5 @@
-#ifndef FactoryFigure_H
-#define FactoryFigure_H
+#ifndef _FACTORYFIGURE_H_
+#define _FACTORYFIGURE_H_
 
 class factoryfigure {
 private:
@@ -12,4 +12,3 @@ public:
 };
 
 #endif
-

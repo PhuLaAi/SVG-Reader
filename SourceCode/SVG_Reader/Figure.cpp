@@ -5,7 +5,7 @@ figure::figure() {
 	text_name = "", line_str = "", fig = "";
 }
 
-void figure::modifyAttribute() {}
+void figure::updateProperty() {}
 
 string figure::getName() {
 	return this->fig;

@@ -1,5 +1,5 @@
-#ifndef Color_H
-#define Color_h
+#ifndef _COLOR_H_
+#define _COLOR_H_
 
 class color {
 private:
@@ -26,6 +26,3 @@ public:
 };
 
 #endif
-
-
-

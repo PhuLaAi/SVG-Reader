@@ -204,7 +204,7 @@ void parser::processProperty(string name, string property, string textName, figu
 	}
 	stringstream transformStream(strTransform);
 	string token = "";
-	fig->modifyAttribute();
+	fig->updateProperty();
 	if (!strTransform.empty()) {
 		fig->updateTransformVct(strTransform);
 	}
@@ -499,4 +499,3 @@ void parser::parseItem(group* root, string fileName, viewbox& vb) {
 }
 
 parser::~parser() {}
-

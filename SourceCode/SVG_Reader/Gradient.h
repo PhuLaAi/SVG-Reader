@@ -1,5 +1,5 @@
-#ifndef Gradient_H
-#define Gradient_H
+#ifndef _GRADIENT_H_
+#define _GRADIENT_H_
 
 class stop {
 private:

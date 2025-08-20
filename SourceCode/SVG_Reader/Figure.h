@@ -1,5 +1,5 @@
-#ifndef Figure_H
-#define Figure_H
+#ifndef _FIGURE_H_
+#define _FIGURE_H_
 
 class figure {
 protected:
@@ -13,7 +13,7 @@ protected:
 public:
     figure();
     virtual ~figure();
-    virtual void modifyAttribute();
+    virtual void updateProperty();
 
     string getName();
     string getTextName();

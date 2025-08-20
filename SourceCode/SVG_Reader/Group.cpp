@@ -35,4 +35,3 @@ group* group::getParent() {
 vector<figure*> group::getFigureArray() {
 	return this->figureArray;
 }
-

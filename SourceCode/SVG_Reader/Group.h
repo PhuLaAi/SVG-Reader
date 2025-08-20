@@ -1,5 +1,5 @@
-#ifndef Group_H
-#define Group_H
+#ifndef _GROUP_H_
+#define _GROUP_H_
 
 class group:public figure {
 	vector<figure*> figureArray;

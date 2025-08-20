@@ -1,5 +1,5 @@
-#ifndef Circle_H
-#define Circle_H
+#ifndef _CIRCLE_H_
+#define _CIRCLE_H_
 
 class circle : public ellipse {
 private:
@@ -8,8 +8,7 @@ public:
 	circle();
 	~circle();
 
-	void modifyAttribute();
+	void updateProperty();
 };
 
 #endif
-
