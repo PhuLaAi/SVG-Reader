@@ -13,6 +13,12 @@ struct CMD {
 float offsetX = 0, offsetY = 0, zoomFactor = 1.0;
 
 // Global Variables:
+ULONG_PTR g_gdiplusToken;
+image* g_image = nullptr;
+viewbox* g_vb = nullptr;
+parser g_parseTool;
+renderer g_renderTool;
+WNDCLASSEXW wcex = { 0 };
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
@@ -43,7 +49,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_SVGREADER, szWindowClass, MAX_LOADSTRING);
+    if (!LoadStringW(hInstance, IDC_SVGREADER, szWindowClass, MAX_LOADSTRING)) {
+        wcscpy_s(szWindowClass, L"SVGReaderClass"); // fallback
+    }
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -78,8 +86,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
-
     wcex.cbSize = sizeof(WNDCLASSEX);
 
     wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -92,9 +98,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_SVGREADER);
     wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    return RegisterClassExW(&wcex);
+    ATOM result = RegisterClassExW(&wcex);
+    if (!result) {
+        MessageBoxA(NULL, "RegisterClassExW failed!", "Error", MB_OK | MB_ICONERROR);
+    }
+    return result;
 }
 
 //
@@ -111,11 +121,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, CMD* cmdLine)
 {
     hInst = hInstance; // Store instance handle in our global variable
 
+    
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, cmdLine);
 
     if (!hWnd)
     {
+        MessageBoxA(NULL, "Failed to create window!", "Error", MB_OK | MB_ICONERROR);
         return FALSE;
     }
 
@@ -147,8 +159,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     if (message == WM_CREATE)
     {
         CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        cmdLine = reinterpret_cast<CMD*>(pCreate->lpCreateParams);
+        CMD* cmdLine = reinterpret_cast<CMD*>(pCreate->lpCreateParams);
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)cmdLine);
+
+        g_image = new image(cmdLine->FileInput);
+        g_vb = new viewbox();
+        g_image->parseImage(g_parseTool, *g_vb);
     }
 
     bool is_dragging = false;
@@ -303,7 +319,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         float Width = vb->getPortWidth();
         float Height = vb->getPortHeight();
         float scaleX = 1, scaleY = 1, scaleXY = 1;
-        
+
         RECT window;
         GetWindowRect(hWnd, &window);
 
